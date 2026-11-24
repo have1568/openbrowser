@@ -120,7 +120,8 @@ import { Agent, Viewport, VercelModelAdapter } from '@have1568/open-browser'
 
 // Any OpenAI-compatible endpoint works: set baseURL for a self-hosted model.
 const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
-const model = new VercelModelAdapter({ model: openai('gpt-4o-mini'), provider: 'openai' })
+// structuredOutputs: false — OpenAI's strict json_schema mode rejects the agent's action schema.
+const model = new VercelModelAdapter({ model: openai('gpt-4o-mini', { structuredOutputs: false }), provider: 'openai' })
 
 const browser = new Viewport({ headless: true })
 await browser.start()

@@ -8,6 +8,8 @@ export interface RendererOptions {
 	maxDepth: number;
 	filterPaintOrder: boolean;
 	maxElementsInDom: number;
+	/** Options shown per select element; the rest are summarised in one line. */
+	maxOptionsPerSelect: number;
 	collapseSvg: boolean;
 	deduplicateSiblings: boolean;
 	siblingDeduplicateThreshold: number;
@@ -22,6 +24,7 @@ const DEFAULT_OPTIONS: RendererOptions = {
 	maxDepth: 100,
 	filterPaintOrder: true,
 	maxElementsInDom: 2000,
+	maxOptionsPerSelect: 40,
 	collapseSvg: true,
 	deduplicateSiblings: true,
 	siblingDeduplicateThreshold: 5,
@@ -234,11 +237,20 @@ export class TreeRenderer {
 
 		lines.push(`${indent}${parts.join('')}`);
 
+		// A select with thousands of options would flood the prompt on every step. Show the first
+		// ones and say how many were left out; the select action picks an option by its text.
+		let children = node.children;
+		if (node.tagName === 'select' && children.length > this.options.maxOptionsPerSelect) {
+			const hidden = children.length - this.options.maxOptionsPerSelect;
+			children = children.slice(0, this.options.maxOptionsPerSelect);
+			lines.push(`${indent}\t[... ${hidden} more options not shown; choose one by its exact text]`);
+		}
+
 		// Deduplicate similar siblings
 		if (this.options.deduplicateSiblings) {
-			this.serializeChildrenWithDedup(node.children, lines, depth + 1, selectorMap, ctx, maxElements);
+			this.serializeChildrenWithDedup(children, lines, depth + 1, selectorMap, ctx, maxElements);
 		} else {
-			for (const child of node.children) {
+			for (const child of children) {
 				this.serializeNode(child, lines, depth + 1, selectorMap, ctx, maxElements);
 			}
 		}

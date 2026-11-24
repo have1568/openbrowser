@@ -46,11 +46,12 @@ function getTurndown(): TurndownService {
 
 function htmlTableToMarkdown(table: HTMLTableElement): string {
 	const rows: string[][] = [];
-	const tableRows = table.querySelectorAll('tr');
+	// Array.from: turndown's own DOM returns array-likes that are not iterable.
+	const tableRows = Array.from(table.querySelectorAll('tr'));
 
 	for (const row of tableRows) {
 		const cells: string[] = [];
-		for (const cell of row.querySelectorAll('th, td')) {
+		for (const cell of Array.from(row.querySelectorAll('th, td'))) {
 			cells.push((cell.textContent ?? '').trim().replace(/\|/g, '\\|'));
 		}
 		if (cells.length > 0) {

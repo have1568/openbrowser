@@ -110,6 +110,7 @@ export class Agent {
 
 		this.domService = options.domService ?? new PageAnalyzer({
 			capturedAttributes: this.settings.capturedAttributes,
+			maxElementsInDom: this.settings.maxElementsInDom,
 		});
 
 		this.messageManager = new ConversationManager({
@@ -652,7 +653,11 @@ export class Agent {
 	private getOutputSchema(): z.ZodType<unknown> {
 		// Flash mode: simpler schema for cheaper / faster models
 		if (this.settings.compactMode || isCompactModel(this.model.modelId)) {
-			return AgentDecisionCompactSchema as z.ZodType<unknown>;
+			// Same typed actions as the full schema: with untyped actions the model has no way to
+			// know an action's name and fields and invents ones such as {"tap": 10}.
+			return AgentDecisionCompactSchema.extend({
+				actions: z.array(CommandSchema),
+			}) as z.ZodType<unknown>;
 		}
 
 		// Extended thinking: model reasons internally, skip brain schema
