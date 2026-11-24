@@ -115,23 +115,31 @@ browser> help
 ## Using as a Library
 
 ```typescript
-import { Agent, createViewport, createModel } from 'open-browser'
+import { createOpenAI } from '@ai-sdk/openai'
+import { Agent, Viewport, VercelModelAdapter } from 'open-browser'
 
-const viewport = await createViewport({ headless: true })
-const model = createModel('openai', 'gpt-4o')
+// Any OpenAI-compatible endpoint works: set baseURL for a self-hosted model.
+const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
+const model = new VercelModelAdapter({ model: openai('gpt-4o-mini'), provider: 'openai' })
+
+const browser = new Viewport({ headless: true })
+await browser.start()
 
 const agent = new Agent({
-  viewport,
+  browser,
   model,
   task: 'Go to example.com and extract the main heading',
   settings: {
     stepLimit: 50,
     enableScreenshots: true,
+    // Navigate yourself with browser.navigate(url) when a URL contains punctuation.
+    autoNavigateToUrls: false,
   },
 })
 
 const result = await agent.run()
-console.log(result)
+console.log(result.finalResult)
+await browser.close()
 ```
 
 ### Sandboxed Execution
