@@ -1,5 +1,5 @@
 {
-  "name": "open-browser",
+  "name": "@have1568/open-browser",
   "version": "1.1.0",
   "description": "AI-powered autonomous web browsing library for TypeScript",
   "type": "module",
@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').cpSync('src/agent/instructions','dist/agent/instructions',{recursive:true})\"",
     "test": "bun test",
     "lint": "biome check src/",
     "typecheck": "tsc --noEmit",
@@ -48,5 +48,13 @@
     "dist",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/have1568/openbrowser.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }

@@ -116,7 +116,7 @@ browser> help
 
 ```typescript
 import { createOpenAI } from '@ai-sdk/openai'
-import { Agent, Viewport, VercelModelAdapter } from 'open-browser'
+import { Agent, Viewport, VercelModelAdapter } from '@have1568/open-browser'
 
 // Any OpenAI-compatible endpoint works: set baseURL for a self-hosted model.
 const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
