@@ -14,6 +14,8 @@ export interface AgentConfig {
 	enableScreenshots: boolean;
 	enableScreenshotsForTextExtraction: boolean;
 	contextWindowSize: number;
+	/** Interactive elements shown to the model per step; the rest of the page is cut off. */
+	maxElementsInDom: number;
 	capturedAttributes: string[];
 	commandDelayMs: number;
 	allowedUrls?: string[];
@@ -75,6 +77,7 @@ export const DEFAULT_AGENT_CONFIG: AgentConfig = {
 	enableScreenshots: true,
 	enableScreenshotsForTextExtraction: false,
 	contextWindowSize: 128000,
+	maxElementsInDom: 2000,
 	capturedAttributes: [
 		'title', 'type', 'name', 'role', 'tabindex',
 		'aria-label', 'placeholder', 'value', 'alt', 'aria-expanded',
